@@ -1,21 +1,27 @@
 import Phaser from 'phaser'
-import WebFontFile from './WebFontFile'
-import { GameBackground } from '../consts/SceneKeys'
+import { GameBackground, GameOver } from '../consts/SceneKeys'
 import * as Colors from '../consts/Colors'
+import { PressStart2P } from '../consts/Fonts'
+
+
+const GameState = {
+    Running: 'running',
+    PlayerWon: 'player-won',
+    AIWon: 'ai-won'
+}
 
 class Game extends Phaser.Scene
 {
     init(){
+        this.gameState = GameState.Running
         this.paddleRightVelocity = new Phaser.Math.Vector2(0, 0)
 
         this.leftScore = 0
         this.rightScore = 0
+
+        this.paused = false
     }
-    preload()   //Uses webfontloader
-    {
-        const fonts = new WebFontFile(this.load, 'Press Start 2P')
-        this.load.addFile(fonts)
-    }
+     //preload()
 
     create()
     {
@@ -46,7 +52,7 @@ class Game extends Phaser.Scene
         
         const scoreStyle =  {
             fontSize: 48,
-            fontFamily: '"Press Start 2P"' //use both quites if there is a spacing in font name.
+            fontFamily: PressStart2P //use both quites if there is a spacing in font name.
         }
         this.leftScoreLabel = this.add.text(300, 125, '0', scoreStyle) //Adding score
             .setOrigin(0.5, 0.5) 
@@ -61,6 +67,9 @@ class Game extends Phaser.Scene
     }
 
     update(){
+        if(this.paused || this.gameState !== GameState.Running){  //don't do anyting if pause is returned
+            return
+        }
         //player key input logic was here
         this.processPlayerInput()
         // ai logic was here. Logic that computer's paddle right always hits the ball.
@@ -89,9 +98,9 @@ class Game extends Phaser.Scene
     updateAI()
     {
         const diff = this.ball.y - this.paddleRight.y
-        // if(Math.abs(diff) < 10){ //to make the right paddle move smoothly without jitter
-        //     return 
-        // }
+        if(Math.abs(diff) < 10){ //to make the right paddle move smoothly without jitter //don't return anything
+            return 
+        }
 
         const aiSpeed = 3
 
@@ -116,16 +125,57 @@ class Game extends Phaser.Scene
 
         checkScore()
         {
+            const x = this.ball.x
+            const leftBounds = -30
+            const rightBounds = 830
+            if (x >= leftBounds && x <= rightBounds){
+                return
+            }
             
-            if(this.ball.x < -30){
+            if(this.ball.x < leftBounds){
                 //scored on the left side
-                this.resetBall()
+                // this.resetBall()
+                this.incrementRightScore()
+            }
+            else if(this.ball.x > rightBounds){
+                //scored on the right side
+                // this.resetBall()
                 this.incrementLeftScore()
             }
-            else if(this.ball.x > 830){
-                //scored on the right side
+
+            const maxScore = 7 
+            if (this.leftScore >= maxScore)
+            {
+                //Player won.
+                // this.paused = true
+                this.gameState = GameState.PlayerWon
+            }
+            else if (this.rightScore >= maxScore)
+            {
+                //AI won.
+                // this.paused = true
+                this.gameState = GameState.AIWon
+            }
+
+            // if(!this.paused){
+            //     this.resetBall()
+            // }
+            if(this.gameState === GameState.Running){
                 this.resetBall()
-                this.incrementRightScore()
+            }
+            else {
+                this.ball.active = false
+                this.physics.world.remove(this.ball.body)
+
+                this.scene.stop(GameBackground)
+                //show the win/game over screen
+                this.scene.start(GameOver, {
+                    leftScore: this.leftScore,
+                    rightScore: this.rightScore
+
+                })
+
+
             }
         }
 
@@ -147,7 +197,7 @@ class Game extends Phaser.Scene
     {
         this.ball.setPosition(400, 250)
         const angle = Phaser.Math.Between(0,360)
-        const vec = this.physics.velocityFromAngle(angle, 200) //200 is speed.
+        const vec = this.physics.velocityFromAngle(angle, 300) //200 is original speed. reset to 300 to make computer able to lose.
         this.ball.body.setVelocity(vec.x, vec.y)
     }
 } 
