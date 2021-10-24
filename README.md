@@ -2,4 +2,5 @@
 Pong is a single game made in Phaser using Modern JS, HTML, CSS, ES6 and parcel.
 You can control the the paddle with up and down buttons. 
 The game has audio and uses webfontloader.
+Play the game for 7 rounds, and see who wins...
 
