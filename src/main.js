@@ -22,9 +22,9 @@ const config = {     //get config codes from photostorm.github.io/phaser3-docs..
 
 const game= new Phaser.Game(config)
 
-game.scene.add(SceneKeys.Titlescreen, TitleScreen) //register
+game.scene.add(SceneKeys.TitleScreen, TitleScreen) //register
 game.scene.add(SceneKeys.Game, Game)
 game.scene.add(SceneKeys.GameBackground, GameBackground)
 
-// game.scene.start('titlescreen')    //display on screen.
-game.scene.start(SceneKeys.Game)
+game.scene.start(SceneKeys.TitleScreen)    //display on screen.
+//game.scene.start(SceneKeys.Game)

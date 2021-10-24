@@ -27,11 +27,12 @@ class Game extends Phaser.Scene
        
         this.ball= this.add.circle(400, 250, 10, Colors.white, 1) //create a white ball in the centre of screen
         this.physics.add.existing(this.ball) //add physics to ball
+        this.ball.body.setCircle(10)     //to make the reacting physics be in circle of radius 10, i.e. same as ball.
         this.ball.body.setBounce(1, 1)
 
         this.ball.body.setCollideWorldBounds(true, 1, 1) //Added ball bouncing capabilities off the border/bounds of screen 
 
-        this.resetBall()
+        // this.resetBall() //was here, moving to save from resetting without time when TitleScreen goes off.
 
         this.paddleLeft = this.add.rectangle(50, 250, 30, 100, Colors.white, 1)  //add a player paddle in left side of screen.
         this.physics.add.existing(this.paddleLeft, true) //added physics to surroundings and ball.
@@ -53,7 +54,10 @@ class Game extends Phaser.Scene
         .setOrigin(0.5, 0.5)
 
         this.cursors= this.input.keyboard.createCursorKeys() //Make Up and down keys.
-    
+        
+        this.time.delayedCall(1500, ()=> {
+            this.resetBall()   //restes screen after 1500 seconds.
+        })
     }
 
     update(){
