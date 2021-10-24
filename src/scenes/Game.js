@@ -1,6 +1,7 @@
 import Phaser from 'phaser'
-
 import WebFontFile from './WebFontFile'
+import { GameBackground } from '../consts/SceneKeys'
+import * as Colors from '../consts/Colors'
 
 class Game extends Phaser.Scene
 {
@@ -18,13 +19,13 @@ class Game extends Phaser.Scene
 
     create()
     {
-        this.scene.run('game-background')
-        this.scene.sendToBack('game-background') //make the background appear in the backside.
+        this.scene.run(GameBackground)
+        this.scene.sendToBack(GameBackground) //make the background appear in the backside.
 
         this.physics.world.setBounds(-100, 0, 1000, 500)
 
        
-        this.ball= this.add.circle(400, 250, 10, 0xffffff, 1) //create a white ball in the centre of screen
+        this.ball= this.add.circle(400, 250, 10, Colors.white, 1) //create a white ball in the centre of screen
         this.physics.add.existing(this.ball) //add physics to ball
         this.ball.body.setBounce(1, 1)
 
@@ -32,11 +33,11 @@ class Game extends Phaser.Scene
 
         this.resetBall()
 
-        this.paddleLeft = this.add.rectangle(50, 250, 30, 100, 0xffffff, 1)  //add a player paddle in left side of screen.
+        this.paddleLeft = this.add.rectangle(50, 250, 30, 100, Colors.white, 1)  //add a player paddle in left side of screen.
         this.physics.add.existing(this.paddleLeft, true) //added physics to surroundings and ball.
         
         
-        this.paddleRight = this.add.rectangle(750, 250, 30, 100, 0xffffff, 1)
+        this.paddleRight = this.add.rectangle(750, 250, 30, 100, Colors.white, 1)
         this.physics.add.existing(this.paddleRight, true)
 
         this.physics.add.collider(this.paddleLeft, this.ball) //react on colliding the paddle(left) with the ball.
@@ -56,6 +57,16 @@ class Game extends Phaser.Scene
     }
 
     update(){
+        //player key input logic was here
+        this.processPlayerInput()
+        // ai logic was here. Logic that computer's paddle right always hits the ball.
+        this.updateAI()
+        //scoring logic was here
+        this.checkScore()
+    }
+
+    processPlayerInput()
+    {
         /** @type {Phaser.Physics.Arcade.StaticBody} */ //To tell the js that body is type of Phaser.Arcade.Body
         const body = this.paddleLeft.body
 
@@ -69,6 +80,10 @@ class Game extends Phaser.Scene
             body.updateFromGameObject() 
 
         }
+    }
+
+    updateAI()
+    {
         const diff = this.ball.y - this.paddleRight.y
         // if(Math.abs(diff) < 10){ //to make the right paddle move smoothly without jitter
         //     return 
@@ -93,18 +108,22 @@ class Game extends Phaser.Scene
 
         this.paddleRight.y += this.paddleRightVelocity.y
         this.paddleRight.body.updateFromGameObject()
-
-        if(this.ball.x < -30){
-            //scored on the left side
-            this.resetBall()
-            this.incrementLeftScore()
-        }
-        else if(this.ball.x > 830){
-            //scored on the right side
-            this.resetBall()
-            this.incrementRightScore()
-        }
     }
+
+        checkScore()
+        {
+            
+            if(this.ball.x < -30){
+                //scored on the left side
+                this.resetBall()
+                this.incrementLeftScore()
+            }
+            else if(this.ball.x > 830){
+                //scored on the right side
+                this.resetBall()
+                this.incrementRightScore()
+            }
+        }
 
     incrementLeftScore()
     {

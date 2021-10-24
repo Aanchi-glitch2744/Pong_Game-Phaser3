@@ -4,6 +4,8 @@ import TitleScreen from './scenes/TitleScreen'
 import Game from './scenes/Game'
 import GameBackground from './scenes/GameBackground'
 
+import * as SceneKeys from './consts/SceneKeys'
+
 const config = {     //get config codes from photostorm.github.io/phaser3-docs...
     width: 800,
     height: 500,
@@ -20,9 +22,9 @@ const config = {     //get config codes from photostorm.github.io/phaser3-docs..
 
 const game= new Phaser.Game(config)
 
-game.scene.add('titlescreen', TitleScreen) //register
-game.scene.add('game', Game)
-game.scene.add('game-background', GameBackground)
+game.scene.add(SceneKeys.Titlescreen, TitleScreen) //register
+game.scene.add(SceneKeys.Game, Game)
+game.scene.add(SceneKeys.GameBackground, GameBackground)
 
 // game.scene.start('titlescreen')    //display on screen.
-game.scene.start('game')
+game.scene.start(SceneKeys.Game)
