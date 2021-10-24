@@ -2,6 +2,7 @@ import Phaser from 'phaser'
 import { GameBackground, GameOver } from '../consts/SceneKeys'
 import * as Colors from '../consts/Colors'
 import { PressStart2P } from '../consts/Fonts'
+import * as AudioKeys from '../consts/AudioKeys'
 
 
 const GameState = {
@@ -35,9 +36,10 @@ class Game extends Phaser.Scene
         this.physics.add.existing(this.ball) //add physics to ball
         this.ball.body.setCircle(10)     //to make the reacting physics be in circle of radius 10, i.e. same as ball.
         this.ball.body.setBounce(1, 1)
+        this.ball.body.setMaxSpeed(400) //400px per second
 
         this.ball.body.setCollideWorldBounds(true, 1, 1) //Added ball bouncing capabilities off the border/bounds of screen 
-
+        this.ball.body.onWorldBounds = true
         // this.resetBall() //was here, moving to save from resetting without time when TitleScreen goes off.
 
         this.paddleLeft = this.add.rectangle(50, 250, 30, 100, Colors.white, 1)  //add a player paddle in left side of screen.
@@ -47,9 +49,11 @@ class Game extends Phaser.Scene
         this.paddleRight = this.add.rectangle(750, 250, 30, 100, Colors.white, 1)
         this.physics.add.existing(this.paddleRight, true)
 
-        this.physics.add.collider(this.paddleLeft, this.ball) //react on colliding the paddle(left) with the ball.
-        this.physics.add.collider(this.paddleRight, this.ball)
+        this.physics.add.collider(this.paddleLeft, this.ball, this.handlePaddleBallCollision, undefined, this) //react on colliding the paddle(left) with the ball.
+        this.physics.add.collider(this.paddleRight, this.ball, this.handlePaddleBallCollision, undefined, this)
         
+        this.physics.world.on('worldbounds', this.handleBallWorldBoundsCollision, this)
+
         const scoreStyle =  {
             fontSize: 48,
             fontFamily: PressStart2P //use both quites if there is a spacing in font name.
@@ -76,6 +80,28 @@ class Game extends Phaser.Scene
         this.updateAI()
         //scoring logic was here
         this.checkScore()
+    }
+
+    handleBallWorldBoundsCollision(body, up, down, left, right){
+        if(left || right){
+            return
+        }
+
+        this.sound.play(AudioKeys.PongPlop)
+    }
+
+    handlePaddleBallCollision(paddle, ball){
+        // console.dir(paddle)
+        // console.dir(ball)
+        this.sound.play(AudioKeys.PongBeep)
+
+        /** @type {Phaser.Physics.Arcade.Body} */
+        const body = this.ball.body
+        const vel = body.velocity
+        vel.x *= 1.05
+        vel.y *= 1.05
+        body.setVelocity(vel.x, vel.y)
+
     }
 
     processPlayerInput()

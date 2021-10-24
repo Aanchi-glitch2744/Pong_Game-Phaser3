@@ -1,6 +1,7 @@
 import Phaser from 'phaser' //Gives intelliSense feature.
 import { Game } from '../consts/SceneKeys'
 import { PressStart2P } from '../consts/Fonts'
+import * as AudioKeys from '../consts/AudioKeys'
 export default class TitleScreen extends Phaser.Scene
 
 {
@@ -22,7 +23,9 @@ export default class TitleScreen extends Phaser.Scene
 
         this.input.keyboard.once(`keydown-SPACE`, ()=>{ // `keydown-${Phaser.Input.Keyboard.KeyCodes.SPACE}` is equal to: 'keydown-' + Phaser.Input.Keyboard.KeyCodes.SPACE 
             // console.log('space pressed')
+            // this.sound.play(AudioKeys.PongBeep)
             this.scene.start(Game)
+            this.sound.play(AudioKeys.PongBeep)
         })
     }
 }
