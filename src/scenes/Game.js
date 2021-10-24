@@ -18,6 +18,9 @@ class Game extends Phaser.Scene
 
     create()
     {
+        this.scene.run('game-background')
+        this.scene.sendToBack('game-background') //make the background appear in the backside.
+
         this.physics.world.setBounds(-100, 0, 1000, 500)
 
        
@@ -45,12 +48,11 @@ class Game extends Phaser.Scene
         }
         this.leftScoreLabel = this.add.text(300, 125, '0', scoreStyle) //Adding score
             .setOrigin(0.5, 0.5) 
-        this.rightScoreLabel = this.add.text(500, 325, '0', scoreStyle)
+        this.rightScoreLabel = this.add.text(500, 375, '0', scoreStyle)
         .setOrigin(0.5, 0.5)
 
         this.cursors= this.input.keyboard.createCursorKeys() //Make Up and down keys.
     
-
     }
 
     update(){
@@ -107,13 +109,15 @@ class Game extends Phaser.Scene
     incrementLeftScore()
     {
         this.leftScore +=1
-        this.leftScoreLabel.text = 'Score: ' + this.leftScore
+        // this.leftScoreLabel.text = 'Score: ' + this.leftScore
+        this.leftScoreLabel.text = this.leftScore
     }
 
-    incrementRightScore()
+    incrementRightScore()  //This will actually never happen as the ball and right paddle are moving in same y-axis scale.
     {
         this.rightScore +=1
-        this.rightScoreLabel.text = 'Score: ' + this.rightScore
+        // this.rightScoreLabel.text = 'Score: ' + this.rightScore
+        this.rightScoreLabel.text = this.rightScore
     }
 
     resetBall()   //When paddle loses the baal, the ball rests on center to begin new game.
