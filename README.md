@@ -31,6 +31,26 @@ npm run start
 
 5. Go to ` http://127.0.0.1:8000/` and enjoy the application.
 
+## Screenshots
+
+<table width="100%"> 
+<tr>
+<td width="50%">      
+&nbsp; 
+<br>
+<p align="center">
+  Game in Play
+</p>
+<img src="https://github.com/Aanchi-glitch2744/Pong_Game-Phaser3/blob/main/screenshots/Game%20in%20play.jpg">
+</td> 
+<td width="50%">
+<br>
+<p align="center">
+  Game end
+</p>
+<img src="https://github.com/Aanchi-glitch2744/Pong_Game-Phaser3/blob/main/screenshots/game%20end.jpg">  
+</td>
+</table>
 ## 📜 LICENSE
 
 [MIT](https://github.com/Aanchi-glitch2744/Pong_Game-Phaser3/blob/main/LICENSE.md)
